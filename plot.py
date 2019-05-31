@@ -67,14 +67,27 @@ def gen_plots(json_file, org_file):
                 avg_scores.append(sum(scores)/len(scores))
                 max_scores.append(max(scores))
 
-    plt.plot_date(multi_dates, ind_scores, color='black')
-    plt.plot_date(dates, min_scores, color='red')
-    plt.plot_date(dates, avg_scores, color='blue')
-    plt.plot_date(dates, max_scores, color='green')
-
+    plt.figure(1)
     formatter = DateFormatter('%m/%d/%y')
     ax.xaxis.set_major_formatter(formatter)
-    ax.xaxis.set_tick_params(rotation=30, labelsize=10)
+    ax.xaxis.set_tick_params(rotation=30)
+    plt.xlabel('Date')
+    plt.ylabel('Score')
+    plt.title('All Scores')
+    plt.plot_date(multi_dates, ind_scores, color='black')
+    plt.show()
+
+    plt.figure(2)
+    formatter = DateFormatter('%m/%d/%y')
+    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_tick_params(rotation=30)
+    plt.xlabel('Date')
+    plt.ylabel('Score')
+    plt.title('Summary')
+    plt.plot_date(dates, min_scores, fmt='r-', label='min')
+    plt.plot_date(dates, avg_scores, fmt='b-', label='avg')
+    plt.plot_date(dates, max_scores, fmt='g-', label='max')
+    plt.legend()
     plt.show()
 
 
