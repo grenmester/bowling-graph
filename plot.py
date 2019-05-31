@@ -1,4 +1,5 @@
 from matplotlib.dates import DateFormatter
+import click
 import datetime
 import json
 import matplotlib.pyplot as plt
@@ -27,10 +28,20 @@ def extract_bowling_data(json_file, org_file):
             json.dump(data, output)
 
 
-def gen_plots(json_file, from_org=False, org_file=''):
-    '''Generate plots of bowling data.'''
-    if from_org:
-        extract_bowling_date(json_file, org_file)
+@click.command()
+@click.argument('json-file', type=click.Path())
+@click.option('-o', '--org-file', default='', type=click.Path(),
+              help='Path to org file with bowling data. If this option is '
+              'provided, a JSON file with the name `JSON_FILE\' will be '
+              'generated and used. If this option is not provided, data will '
+              'be read from `JSON_FILE\'.')
+def gen_plots(json_file, org_file):
+    '''
+    Given a JSON file containing bowling data, generate plots analyzing the
+    data. The JSON file can be generated from an org file.
+    '''
+    if org_file:
+        extract_bowling_data(json_file, org_file)
 
     fig, ax = plt.subplots()
     # Individual points
@@ -65,3 +76,7 @@ def gen_plots(json_file, from_org=False, org_file=''):
     ax.xaxis.set_major_formatter(formatter)
     ax.xaxis.set_tick_params(rotation=30, labelsize=10)
     plt.show()
+
+
+if __name__ == '__main__':
+    gen_plots()
