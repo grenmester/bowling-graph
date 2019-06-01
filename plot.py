@@ -3,6 +3,7 @@ import click
 import datetime
 import json
 import matplotlib.pyplot as plt
+import statistics
 
 
 def extract_bowling_data(json_file, org_file):
@@ -43,7 +44,6 @@ def gen_plots(json_file, org_file):
     if org_file:
         extract_bowling_data(json_file, org_file)
 
-    fig, ax = plt.subplots()
     # Individual points
     multi_dates = []
     ind_scores = []
@@ -51,6 +51,7 @@ def gen_plots(json_file, org_file):
     dates = []
     min_scores = []
     avg_scores = []
+    std_scores = []
     max_scores = []
 
     with open(json_file, 'r') as data:
@@ -65,25 +66,37 @@ def gen_plots(json_file, org_file):
                 dates.append(date)
                 min_scores.append(min(scores))
                 avg_scores.append(sum(scores)/len(scores))
+                std_scores.append(statistics.pstdev(scores))
                 max_scores.append(max(scores))
 
-    plt.figure(1)
-    formatter = DateFormatter('%m/%d/%y')
-    ax.xaxis.set_major_formatter(formatter)
-    ax.xaxis.set_tick_params(rotation=30)
+    fig, ax = plt.subplots()
     plt.xlabel('Date')
     plt.ylabel('Score')
     plt.title('All Scores')
-    plt.plot_date(multi_dates, ind_scores, color='black')
-    plt.show()
-
-    plt.figure(2)
     formatter = DateFormatter('%m/%d/%y')
     ax.xaxis.set_major_formatter(formatter)
     ax.xaxis.set_tick_params(rotation=30)
+    plt.plot_date(multi_dates, ind_scores, color='black')
+    plt.show()
+
+    fig, ax = plt.subplots()
+    plt.xlabel('Date')
+    plt.ylabel('Score')
+    plt.title('Average Scores')
+    formatter = DateFormatter('%m/%d/%y')
+    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_tick_params(rotation=30)
+    plt.errorbar(dates, avg_scores, std_scores, capsize=3, capthick=1,
+                 color='black', elinewidth=1, marker='o', markersize=3)
+    plt.show()
+
+    fig, ax = plt.subplots()
     plt.xlabel('Date')
     plt.ylabel('Score')
     plt.title('Summary')
+    formatter = DateFormatter('%m/%d/%y')
+    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_tick_params(rotation=30)
     plt.plot_date(dates, min_scores, fmt='r-', label='min')
     plt.plot_date(dates, avg_scores, fmt='b-', label='avg')
     plt.plot_date(dates, max_scores, fmt='g-', label='max')
