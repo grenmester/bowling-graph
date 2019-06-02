@@ -3,6 +3,7 @@ import click
 import datetime
 import json
 import matplotlib.pyplot as plt
+import os
 import statistics
 
 
@@ -69,6 +70,8 @@ def gen_plots(json_file, org_file):
                 std_scores.append(statistics.pstdev(scores))
                 max_scores.append(max(scores))
 
+    os.mkdir('output')
+
     fig, ax = plt.subplots()
     plt.xlabel('Date')
     plt.ylabel('Score')
@@ -77,6 +80,7 @@ def gen_plots(json_file, org_file):
     ax.xaxis.set_major_formatter(formatter)
     ax.xaxis.set_tick_params(rotation=30)
     plt.plot_date(multi_dates, ind_scores, color='black')
+    plt.savefig('output/graph1.png')
     plt.show()
 
     fig, ax = plt.subplots()
@@ -88,6 +92,7 @@ def gen_plots(json_file, org_file):
     ax.xaxis.set_tick_params(rotation=30)
     plt.errorbar(dates, avg_scores, std_scores, capsize=3, capthick=1,
                  color='black', elinewidth=1, marker='o', markersize=3)
+    plt.savefig('output/graph2.png')
     plt.show()
 
     fig, ax = plt.subplots()
@@ -101,6 +106,7 @@ def gen_plots(json_file, org_file):
     plt.plot_date(dates, avg_scores, fmt='b-', label='avg')
     plt.plot_date(dates, max_scores, fmt='g-', label='max')
     plt.legend()
+    plt.savefig('output/graph3.png')
     plt.show()
 
 
