@@ -71,3 +71,13 @@ ignored. Scores need to be placed in parentheses and delimited by commas.
 Three plots are generated. The first plot shows individual game scores, the
 second plot shows for each day the average and standard deviation, and the
 third plot shows for each day the minimum, average, and maximum scores.
+
+Sample data is provided in the `example` directory.
+
+```bash
+python plot.py sample-data.json --org-file sample-data.org
+```
+
+![graph1](example/graph1.png)
+![graph2](example/graph2.png)
+![graph3](example/graph3.png)
