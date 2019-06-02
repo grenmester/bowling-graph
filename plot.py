@@ -70,7 +70,7 @@ def gen_plots(json_file, org_file):
                 std_scores.append(statistics.pstdev(scores))
                 max_scores.append(max(scores))
 
-    os.mkdir('output')
+    os.makedirs('output', exist_ok=True)
 
     fig, ax = plt.subplots()
     plt.xlabel('Date')
