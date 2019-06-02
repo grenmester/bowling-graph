@@ -32,12 +32,14 @@ def extract_bowling_data(json_file, org_file):
 
 @click.command()
 @click.argument('json-file', type=click.Path())
+@click.option('-d', '--output-dir', default='output', type=click.Path(),
+              help='Path to output directory.')
 @click.option('-o', '--org-file', default='', type=click.Path(),
               help='Path to org file with bowling data. If this option is '
               'provided, a JSON file with the name `JSON_FILE\' will be '
               'generated and used. If this option is not provided, data will '
               'be read from `JSON_FILE\'.')
-def gen_plots(json_file, org_file):
+def gen_plots(json_file, output_dir, org_file):
     '''
     Given a JSON file containing bowling data, generate plots analyzing the
     data. The JSON file can be generated from an org file.
@@ -70,7 +72,7 @@ def gen_plots(json_file, org_file):
                 std_scores.append(statistics.pstdev(scores))
                 max_scores.append(max(scores))
 
-    os.makedirs('output', exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
 
     fig, ax = plt.subplots()
     plt.xlabel('Date')
@@ -80,7 +82,7 @@ def gen_plots(json_file, org_file):
     ax.xaxis.set_major_formatter(formatter)
     ax.xaxis.set_tick_params(rotation=30)
     plt.plot_date(multi_dates, ind_scores, color='black')
-    plt.savefig('output/graph1.png')
+    plt.savefig(os.path.join(output_dir, 'graph1.png'))
     plt.show()
 
     fig, ax = plt.subplots()
@@ -92,7 +94,7 @@ def gen_plots(json_file, org_file):
     ax.xaxis.set_tick_params(rotation=30)
     plt.errorbar(dates, avg_scores, std_scores, capsize=3, capthick=1,
                  color='black', elinewidth=1, marker='o', markersize=3)
-    plt.savefig('output/graph2.png')
+    plt.savefig(os.path.join(output_dir, 'graph2.png'))
     plt.show()
 
     fig, ax = plt.subplots()
@@ -106,7 +108,7 @@ def gen_plots(json_file, org_file):
     plt.plot_date(dates, avg_scores, fmt='b-', label='avg')
     plt.plot_date(dates, max_scores, fmt='g-', label='max')
     plt.legend()
-    plt.savefig('output/graph3.png')
+    plt.savefig(os.path.join(output_dir, 'graph3.png'))
     plt.show()
 
 

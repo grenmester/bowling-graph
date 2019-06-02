@@ -4,6 +4,21 @@ Generates plots of bowling data for data visualization.
 
 ## Usage
 
+```
+Usage: plot.py [OPTIONS] JSON_FILE
+
+  Given a JSON file containing bowling data, generate plots analyzing the
+  data. The JSON file can be generated from an org file.
+
+Options:
+  -d, --output-dir PATH  Path to output directory.
+  -o, --org-file PATH    Path to org file with bowling data. If this option is
+                         provided, a JSON file with the name `JSON_FILE' will
+                         be generated and used. If this option is not
+                         provided, data will be read from `JSON_FILE'.
+  --help                 Show this message and exit.
+```
+
 Two file formats containing the data are accepted: `json` and `org`.
 
 ### `json`
@@ -79,5 +94,7 @@ python plot.py sample-data.json --org-file sample-data.org
 ```
 
 ![graph1](example/graph1.png)
+
 ![graph2](example/graph2.png)
+
 ![graph3](example/graph3.png)
