@@ -58,12 +58,13 @@ def gen_plots(json_file, output_dir, org_file):
     max_scores = []
 
     with open(json_file, 'r') as data:
+        # Load data and sort by date
         data = json.load(data)
-        for item in data:
-            date, scores = item['date'], item['scores']
+        data = list(map(lambda x: (datetime.datetime.strptime(
+            x['date'], '%b %d, %Y').date(), x['scores']), data))
+        for item in sorted(data):
+            date, scores = item
             if scores:
-                date = datetime.datetime.strptime(date, '%b %d, %Y').date()
-
                 multi_dates += [date] * len(scores)
                 ind_scores += scores
                 dates.append(date)
