@@ -1,7 +1,7 @@
-from matplotlib.dates import DateFormatter
 import click
-import datetime
+import datetime as dt
 import json
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import os
 import statistics
@@ -60,7 +60,7 @@ def gen_plots(json_file, output_dir, org_file):
     with open(json_file, 'r') as data:
         # Load data and sort by date
         data = json.load(data)
-        data = list(map(lambda x: (datetime.datetime.strptime(
+        data = list(map(lambda x: (dt.datetime.strptime(
             x['date'], '%b %d, %Y').date(), x['scores']), data))
         for item in sorted(data):
             date, scores = item
@@ -79,8 +79,7 @@ def gen_plots(json_file, output_dir, org_file):
     plt.xlabel('Date')
     plt.ylabel('Score')
     plt.title('All Scores')
-    formatter = DateFormatter('%m/%d/%y')
-    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%y'))
     ax.xaxis.set_tick_params(rotation=30)
     plt.plot_date(multi_dates, ind_scores, color='black')
     plt.savefig(os.path.join(output_dir, 'graph1.png'))
@@ -90,8 +89,7 @@ def gen_plots(json_file, output_dir, org_file):
     plt.xlabel('Date')
     plt.ylabel('Score')
     plt.title('Average Scores')
-    formatter = DateFormatter('%m/%d/%y')
-    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%y'))
     ax.xaxis.set_tick_params(rotation=30)
     plt.errorbar(dates, avg_scores, std_scores, capsize=3, capthick=1,
                  color='black', elinewidth=1, marker='o', markersize=3)
@@ -102,8 +100,7 @@ def gen_plots(json_file, output_dir, org_file):
     plt.xlabel('Date')
     plt.ylabel('Score')
     plt.title('Summary')
-    formatter = DateFormatter('%m/%d/%y')
-    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%y'))
     ax.xaxis.set_tick_params(rotation=30)
     plt.plot_date(dates, min_scores, fmt='r-', label='min')
     plt.plot_date(dates, avg_scores, fmt='b-', label='avg')
