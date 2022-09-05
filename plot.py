@@ -1,49 +1,61 @@
-import click
+"""A convenient script to parse bowling scores and plot statistics."""
+
 import datetime as dt
 import json
-import matplotlib.dates as mdates
-import matplotlib.pyplot as plt
 import os
 import statistics
 
+import click
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+
 
 def extract_bowling_data(json_file, org_file):
-    '''Extract bowling data from org file into JSON.'''
-    with open(org_file, 'r') as source:
+    """Extract bowling data from org file into JSON."""
+    with open(org_file, "r", encoding="utf8") as source:
         lines = source.readlines()
-        date = ''
+        date = ""
         data = []
         for line in lines:
             # Date information
-            if line.startswith('*'):
-                date = line.strip('*').strip()
+            if line.startswith("*"):
+                date = line.strip("*").strip()
             # Bowling information
-            elif 'bowling' in line and date is not '':
+            elif "bowling" in line and date != "":
                 scores = []
                 start = line.find("(") + 1
                 end = line.find(")")
                 if start != 0:
-                    scores = line[start:end].split(',')
+                    scores = line[start:end].split(",")
                     scores = list(map(int, scores))
-                data.append({'date': date, 'scores': scores})
-        with open(json_file, 'w') as output:
+                data.append({"date": date, "scores": scores})
+        with open(json_file, "w", encoding="utf8") as output:
             json.dump(data, output)
 
 
 @click.command()
-@click.argument('json-file', type=click.Path())
-@click.option('-d', '--output-dir', default='output', type=click.Path(),
-              help='Path to output directory.')
-@click.option('-o', '--org-file', default='', type=click.Path(),
-              help='Path to org file with bowling data. If this option is '
-              'provided, a JSON file with the name `JSON_FILE\' will be '
-              'generated and used. If this option is not provided, data will '
-              'be read from `JSON_FILE\'.')
+@click.argument("json-file", type=click.Path())
+@click.option(
+    "-d",
+    "--output-dir",
+    default="output",
+    type=click.Path(),
+    help="Path to output directory.",
+)
+@click.option(
+    "-o",
+    "--org-file",
+    default="",
+    type=click.Path(),
+    help="Path to org file with bowling data. If this option is provided, a "
+    "JSON file with the name `JSON_FILE' will be generated and used. If this "
+    "option is not provided, data will be read from `JSON_FILE'.",
+)
 def gen_plots(json_file, output_dir, org_file):
-    '''
+    """
     Given a JSON file containing bowling data, generate plots analyzing the
     data. The JSON file can be generated from an org file.
-    '''
+    """
     if org_file:
         extract_bowling_data(json_file, org_file)
 
@@ -57,11 +69,11 @@ def gen_plots(json_file, output_dir, org_file):
     std_scores = []
     max_scores = []
 
-    with open(json_file, 'r') as data:
+    with open(json_file, "r", encoding="utf8") as data:
         # Load data and sort by date
         data = json.load(data)
         data = list(map(lambda x: (dt.datetime.strptime(
-            x['date'], '%b %d, %Y').date(), x['scores']), data))
+            x["date"], "%b %d, %Y").date(), x["scores"]), data))
         for item in sorted(data):
             date, scores = item
             if scores:
@@ -110,5 +122,5 @@ def gen_plots(json_file, output_dir, org_file):
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     gen_plots()
