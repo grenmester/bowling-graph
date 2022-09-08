@@ -44,6 +44,8 @@ def gen_stats(data):
     df["max"] = df["scores"].apply(np.max)
     df["mean"] = df["scores"].apply(np.mean)
     df["std"] = df["scores"].apply(np.std)
+    df["cum_avg"] = df["mean"].cumsum() / range(1, df.shape[0] + 1)
+    df["moving_avg"] = df["mean"].rolling(3, min_periods=1).mean()
 
     return df
 
@@ -107,6 +109,55 @@ def gen_summary_plot(df, output_dir):
     plt.savefig(os.path.join(output_dir, "summary_plot.png"), dpi=300)
 
 
+def gen_league_plot(df, output_dir):
+    """Generate summary plot of league scores."""
+    _, ax = plt.subplots(figsize=(10, 6))
+    plt.xlabel("Date")
+    plt.ylabel("Score")
+    plt.title("League Summary")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d/%y"))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=2))
+    ax.xaxis.set_tick_params(rotation=30)
+    plt.grid(alpha=0.1, axis="y", color="black", linestyle="-", linewidth=1)
+    plt.errorbar(
+        df["date"], df["cum_avg"], alpha=0.5, color="blue", linestyle="-", linewidth=0.9
+    )
+    plt.errorbar(
+        df["date"],
+        df["moving_avg"],
+        alpha=0.5,
+        color="green",
+        linestyle="-",
+        linewidth=0.9,
+    )
+    plt.errorbar(
+        df["date"],
+        df["mean"],
+        [df["mean"] - df["min"], df["max"] - df["mean"]],
+        capsize=3,
+        capthick=1,
+        color="black",
+        elinewidth=1,
+        linestyle=":",
+        marker="o",
+        markersize=3,
+    )
+    for idx, row in df.iterrows():
+        offset = (
+            4
+            if idx + 1 < df.shape[0] and df.loc[idx + 1, "mean"] < row["mean"]
+            else -11
+        )
+        plt.annotate(
+            round(row["mean"]),
+            (mdates.date2num(row["date"]), row["mean"]),
+            xytext=(3, offset),
+            textcoords="offset points",
+        )
+    plt.subplots_adjust(bottom=0.15)
+    plt.savefig(os.path.join(output_dir, "league_plot.png"), dpi=300)
+
+
 @click.command()
 @click.argument("json-file", type=click.Path())
 @click.option(
@@ -141,6 +192,7 @@ def gen_plots(json_file, output_dir, org_file):
     gen_scatter_plot(df, output_dir)
     gen_errorbar_plot(df, output_dir)
     gen_summary_plot(df, output_dir)
+    gen_league_plot(df, output_dir)
 
 
 if __name__ == "__main__":
