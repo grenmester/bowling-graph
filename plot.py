@@ -14,22 +14,26 @@ import pandas as pd
 def extract_bowling_data(json_file, org_file):
     """Extract bowling data from org file into JSON."""
     with open(org_file, "r", encoding="utf8") as source:
-        lines = source.readlines()
-        date = ""
-        data = []
-        for line in lines:
-            # Date information
+        date, data, scores = "", [], []
+
+        for line in source.readlines():
+            # Date information encountered
             if line.startswith("*"):
+                if scores:
+                    data.append({"date": date, "scores": scores})
+                    scores = []
                 date = line.strip("*").strip()
-            # Bowling information
-            elif "bowling" in line and date != "":
-                scores = []
+            # Bowling information encountered
+            elif all(token in line for token in ["bowling", "(", ")"]) and date != "":
                 start = line.find("(") + 1
                 end = line.find(")")
                 if start != 0:
-                    scores = line[start:end].split(",")
-                    scores = list(map(int, scores))
-                data.append({"date": date, "scores": scores})
+                    scores.extend(map(int, line[start:end].split(",")))
+
+        # Handle final scores
+        if scores:
+            data.append({"date": date, "scores": scores})
+
         with open(json_file, "w", encoding="utf8") as output:
             json.dump(data, output)
 
