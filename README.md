@@ -4,7 +4,7 @@ Generates plots of bowling data for data visualization.
 
 ## Usage
 
-```
+```txt
 Usage: plot.py [OPTIONS] JSON_FILE
 
   Given a JSON file containing bowling data, generate plots analyzing the
@@ -67,15 +67,15 @@ python plot.py foo.json --org-file foo.org
 where `foo.json` is the name of the `json` file the data gets output to and
 `foo.org` contains data in the following format.
 
-```
+```org
 * Jul 7, 2017
-  - foo
-  - bowling (114, 136, 169)
-  - bar
+- foo
+- bowling (114, 136, 169)
+- bar
 
 * Jul 8, 2017
-  - foobar
-  - bowling (86, 116, 141)
+- foobar
+- bowling (86, 116, 141)
 ```
 
 Lines that are not headlines and do not contain the word `bowling` will be
@@ -83,18 +83,19 @@ ignored. Scores need to be placed in parentheses and delimited by commas.
 
 ## Output
 
-Three plots are generated. The first plot shows individual game scores, the
-second plot shows for each day the average and standard deviation, and the
-third plot shows for each day the minimum, average, and maximum scores.
+Multiple plots are generated. The first plot shows individual scores, the
+second plot shows the mean and standard deviation for each day, the third plot
+shows the minimum, mean, and maximum scores for each day, and the fourth plot
+shows the mean and range for each day as well as a moving average and
+cumulative average.
 
 Sample data is provided in the `example` directory.
 
 ```bash
-python plot.py sample-data.json --org-file sample-data.org
+python plot.py sample-data.json --org-file example/sample-data.org
 ```
 
-![graph1](example/graph1.png)
-
-![graph2](example/graph2.png)
-
-![graph3](example/graph3.png)
+![scatter_plot](example/scatter_plot.png)
+![errorbar_plot](example/errorbar_plot.png)
+![summary_plot](example/summary_plot.png)
+![detailed_plot](example/detailed_plot.png)
